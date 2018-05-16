@@ -13,7 +13,6 @@
       "args": ["--no-timeouts", "--colors"], //you can specify paths to specific tests here
       "runtimeExecutable": null,
       "env": {
-        "NODE_ENV": "docker",
         "SERVER_SCHEMA": "http",
         "SERVER_HOST": "192.168.1.4",
         "SERVER_BACKEND_PORT": "3000",

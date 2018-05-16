@@ -24,11 +24,28 @@
   "devDependencies": {
     "eslint": "^3.17.1",
     "eslint-config-loopback": "^8.0.0",
-    "nsp": "^2.1.0"
+    "husky": "^0.14.3",
+    "lint-staged": "^7.1.0",
+    "nsp": "^2.1.0",
+    "prettier": "^1.12.1"
   },
   "repository": {
     "type": "",
     "url": ""
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "yarn test"
+    }
+  },
+  "lint-staged": {
+    "*.{js,json,css,md}": ["prettier --write", "git add"]
   },
   "license": "UNLICENSED",
   "description": "ethense-backend"
