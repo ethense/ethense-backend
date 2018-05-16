@@ -1,5 +1,3 @@
-'use strict'
-
 module.exports = function(User) {
   User.exist = cb => {
     User.find({}, (err, resp) => {
