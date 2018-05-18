@@ -1,0 +1,27 @@
+{
+  "name": "AppId",
+  "plural": "AppIds",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "mnid": {
+      "type": "string",
+      "required": true
+    },
+    "privateKey": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

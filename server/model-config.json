@@ -35,5 +35,9 @@
   "EthenseUser": {
     "dataSource": "mongodb",
     "public": true
+  },
+  "AppId": {
+    "dataSource": "mongodb",
+    "public": true
   }
 }
