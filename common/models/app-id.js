@@ -15,7 +15,7 @@ module.exports = function(Appid) {
       },
       {
         arg: 'schema',
-        type: 'object',
+        type: 'array',
         required: true,
       },
     ],
