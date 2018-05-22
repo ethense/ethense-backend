@@ -42,7 +42,7 @@ module.exports = function(Appid) {
       })
       console.log(requestToken)
       const requestUri = `me.uport:me?requestToken=${requestToken}`
-      const deepLink = `https://id.uport.me/me?requestToken=${requestToken}`
+      const deepLink = `https://id.uport.me/me?requestToken=${requestToken}&callback_type=post`
       // create image
       const filename = `QR-${crypto.randomBytes(8).toString('hex')}.png`
       const requestQrData = qr.image(requestUri, { type: 'png' })
