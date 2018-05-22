@@ -1,7 +1,20 @@
+var app = require('../../server/server')
+
 module.exports = function(Appid) {
   Appid.issue = (id, email, schema, cb) => {
     console.log(id, email, schema)
-    cb(null, true)
+    console.log(app.models)
+    app.models.PendingClaim.create({
+      issuerAppId: id,
+      schema,
+    })
+      .then(result => {
+        console.log(result)
+        cb(null, true)
+      })
+      .catch(error => {
+        cb(error, null)
+      })
   }
 
   Appid.remoteMethod('issue', {

@@ -47,7 +47,7 @@
       "property": "upsert"
     },{
       "principalType": "ROLE",
-      "principalId": "$authenticated",
+      "principalId": "$everyone",
       "permission": "ALLOW",
       "property": "issue"
     }

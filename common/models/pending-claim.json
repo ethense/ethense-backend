@@ -12,7 +12,7 @@
       "required": true
     },
     "schema": {
-      "type": "object",
+      "type": "array",
       "required": true
     }
   },
