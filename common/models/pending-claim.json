@@ -1,0 +1,23 @@
+{
+  "name": "PendingClaim",
+  "plural": "PendingClaims",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "issuerAppId": {
+      "type": "string",
+      "required": true
+    },
+    "schema": {
+      "type": "object",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

@@ -46,5 +46,9 @@
   "AppId": {
     "dataSource": "mongodb",
     "public": true
+  },
+  "PendingClaim": {
+    "dataSource": "mongodb",
+    "public": true
   }
 }
