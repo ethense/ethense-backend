@@ -50,5 +50,9 @@
   "PendingClaim": {
     "dataSource": "mongodb",
     "public": true
+  },
+  "ClaimTemplate": {
+    "dataSource": "mongodb",
+    "public": true
   }
 }

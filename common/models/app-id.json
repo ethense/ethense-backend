@@ -45,7 +45,8 @@
       "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": "upsert"
-    },{
+    },
+    {
       "principalType": "ROLE",
       "principalId": "$authenticated",
       "permission": "ALLOW",
