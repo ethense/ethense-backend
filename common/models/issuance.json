@@ -12,6 +12,11 @@
       "required": true,
       "default": false
     },
+    "batchIssuing": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
     "name": {
       "type": "string",
       "required": true
@@ -63,6 +68,12 @@
       "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": "deleteById"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": "batchIssue"
     }
   ],
   "methods": {}
