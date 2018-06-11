@@ -1,0 +1,69 @@
+{
+  "name": "Issuance",
+  "plural": "Issuances",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "done": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "appId": {
+      "type": "string",
+      "required": true
+    },
+    "claimId": {
+      "type": "string",
+      "required": true
+    },
+    "recipients": {
+      "type": [
+        "object"
+      ],
+      "required": true,
+      "default": "[]"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": "find"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": "create"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": "patchAttributes"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": "deleteById"
+    }
+  ],
+  "methods": {}
+}
