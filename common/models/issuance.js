@@ -1,7 +1,19 @@
 const kue = require('kue')
-const queue = kue.createQueue()
-
 const app = require('../../server/server')
+
+const redisConf = app.get('redis')
+const redisPassword = redisConf.password ? `:${redisConf.password}@` : ''
+const redisDb = redisConf.db ? `/${redisConf.db}` : ''
+const redisUrl = `redis://${redisConf.user}${redisPassword}${redisConf.host}:${
+  redisConf.port
+}${redisDb}`
+console.log(`Redis URL: ${redisConf.url}`)
+console.log(`Redis URL form parts: ${redisUrl}`)
+const queue = kue.createQueue({
+  redis: {
+    url: redisConf.url ? redisConf.url : redisUrl,
+  },
+})
 
 queue.process('credentialRequestEmail', async (job, done) => {
   const issuance = await app.models.Issuance.findById(job.data.issuanceId)
@@ -10,9 +22,9 @@ queue.process('credentialRequestEmail', async (job, done) => {
 
   async function next(i) {
     const recipient = issuance.recipients[i]
-    console.log('send email to', recipient)
     const status = Math.random() < 0.1 ? 'request failed' : 'requested'
     if (recipient.email) {
+      console.log(`sending email to ${recipient.email}`)
       job.log(`sending email to ${recipient.email}`)
       await issuance.updateAttributes({
         recipients: issuance.recipients.map(
