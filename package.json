@@ -16,6 +16,7 @@
     "helmet": "^1.3.0",
     "isemail": "^3.1.2",
     "jwt-decode": "^2.2.0",
+    "kue": "^0.11.6",
     "loopback": "^3.0.0",
     "loopback-boot": "^2.6.5",
     "loopback-component-explorer": "^5.0.0",
