@@ -30,9 +30,7 @@
       "required": true
     },
     "recipients": {
-      "type": [
-        "object"
-      ],
+      "type": ["object"],
       "required": true,
       "default": "[]"
     }
@@ -80,6 +78,24 @@
       "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": "batchIssue"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": "issue"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": "pushAttestation"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": "emailAttestation"
     }
   ],
   "methods": {}
