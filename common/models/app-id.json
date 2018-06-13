@@ -45,7 +45,7 @@
       "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": "upsert"
-    },
+    }
   ],
   "methods": {}
 }
