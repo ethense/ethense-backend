@@ -96,6 +96,12 @@
       "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": "email"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": "testIssue"
     }
   ],
   "methods": {}

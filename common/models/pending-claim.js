@@ -51,22 +51,24 @@ module.exports = function(Pendingclaim) {
       console.error('Error sending attestation email:', error)
     }
 
-    await issuance.updateAttributes({
-      recipients: issuance.recipients.map(
-        r =>
-          r.email === pendingClaim.recipientEmail
-            ? {
-                ...r,
-                status: 'collected',
-                lastUpdated: Math.floor(new Date() / 1000),
-                mnid: identity.address,
-                pushToken: identity.pushToken,
-                publicEncKey: identity.publicEncKey,
-                attestationToken,
-              }
-            : r
-      ),
-    })
+    if (!pendingClaim.testMode) {
+      await issuance.updateAttributes({
+        recipients: issuance.recipients.map(
+          r =>
+            r.email === pendingClaim.recipientEmail
+              ? {
+                  ...r,
+                  status: 'collected',
+                  lastUpdated: Math.floor(new Date() / 1000),
+                  mnid: identity.address,
+                  pushToken: identity.pushToken,
+                  publicEncKey: identity.publicEncKey,
+                  attestationToken,
+                }
+              : r
+        ),
+      })
+    }
     return true
   }
 

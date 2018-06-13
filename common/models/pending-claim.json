@@ -22,6 +22,10 @@
     "recipientEmail": {
       "type": "string",
       "required": true
+    },
+    "testMode": {
+      "type": "boolean",
+      "required": false
     }
   },
   "validations": [],

@@ -45,8 +45,6 @@ queue.process('credentialRequestEmailBatch', async (job, done) => {
     let status = 'request failed'
 
     try {
-      // TODO: remove line below
-      if(recipient.email === 'user.two@gmail.com') throw new Error('mystery!')
       // generate claim from schema and recipient data
       const claim = claimTemplate.fillDynamicFields(recipient)
 
@@ -241,5 +239,55 @@ module.exports = function(Issuance) {
       { arg: 'email', type: 'string', required: true },
     ],
     returns: { root: true, type: 'object' },
+  })
+
+  Issuance.testIssue = async (id, req, cb) => {
+    const issuance = await app.models.Issuance.findById(id)
+    const claimTemplate = await app.models.ClaimTemplate.findById(
+      issuance.claimId
+    )
+    const appId = await app.models.AppId.findById(issuance.appId)
+    const recipient = {
+      email: req.email,
+      data: { ...req.testFields },
+    }
+
+    try {
+      const claim = claimTemplate.fillDynamicFields(recipient)
+      const pendingClaim = await app.models.PendingClaim.create({
+        claim,
+        issuerAppId: appId.id,
+        issuanceId: issuance.id,
+        recipientEmail: recipient.email,
+        testMode: true,
+      })
+      const requestToken = await uportCredentials.getPendingClaimRequest(
+        appId,
+        pendingClaim
+      )
+      await email.sendCredentialRequestQR({
+        to: recipient.email,
+        from: appId.name,
+        subject: `${issuance.name} Certificate Pickup`,
+        template: DEFAULT_TEMPLATE,
+        token: requestToken,
+      })
+    } catch (error) {
+      console.error(`error sending email to ${recipient.email}`, error)
+    }
+    return true
+  }
+  Issuance.remoteMethod('testIssue', {
+    http: { path: '/:id/testIssue', verb: 'post' },
+    accepts: [
+      { arg: 'id', type: 'string', required: true },
+      {
+        arg: 'req',
+        type: 'object',
+        required: true,
+        http: { source: 'body' },
+      },
+    ],
+    returns: { arg: 'success', type: 'boolean' },
   })
 }
