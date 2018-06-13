@@ -11,8 +11,16 @@
       "type": "string",
       "required": true
     },
-    "schema": {
-      "type": "array",
+    "claim": {
+      "type": "object",
+      "required": true
+    },
+    "issuanceId": {
+      "type": "string",
+      "required": true
+    },
+    "recipientEmail": {
+      "type": "string",
       "required": true
     }
   },
