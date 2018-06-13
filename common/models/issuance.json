@@ -89,13 +89,13 @@
       "principalType": "ROLE",
       "principalId": "$authenticated",
       "permission": "ALLOW",
-      "property": "pushAttestation"
+      "property": "push"
     },
     {
       "principalType": "ROLE",
       "principalId": "$authenticated",
       "permission": "ALLOW",
-      "property": "emailAttestation"
+      "property": "email"
     }
   ],
   "methods": {}

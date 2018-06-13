@@ -193,7 +193,7 @@ module.exports = function(Issuance) {
     returns: { root: true, type: 'object' },
   })
 
-  Issuance.pushAttestation = async (id, recipientEmail, cb) => {
+  Issuance.push = async (id, recipientEmail, cb) => {
     const issuance = await app.models.Issuance.findById(id)
     const appId = await app.models.AppId.findById(issuance.appId)
     const recipient = issuance.recipients.find(i => i.email === recipientEmail)
@@ -208,8 +208,16 @@ module.exports = function(Issuance) {
       recipient
     )
   }
+  Issuance.remoteMethod('push', {
+    http: { path: '/:id/push', verb: 'get' },
+    accepts: [
+      { arg: 'id', type: 'string', required: true },
+      { arg: 'email', type: 'string', required: true },
+    ],
+    returns: { root: true, type: 'object' },
+  })
 
-  Issuance.emailAttestation = async (id, recipientEmail, cb) => {
+  Issuance.email = async (id, recipientEmail, cb) => {
     const issuance = await app.models.Issuance.findById(id)
     const appId = await app.models.AppId.findById(issuance.appId)
     const recipient = issuance.recipients.find(i => i.email === recipientEmail)
@@ -226,4 +234,12 @@ module.exports = function(Issuance) {
       template: DEFAULT_ATTESTATION_TEMPLATE,
     })
   }
+  Issuance.remoteMethod('email', {
+    http: { path: '/:id/email', verb: 'get' },
+    accepts: [
+      { arg: 'id', type: 'string', required: true },
+      { arg: 'email', type: 'string', required: true },
+    ],
+    returns: { root: true, type: 'object' },
+  })
 }
