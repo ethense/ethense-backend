@@ -8,8 +8,6 @@ module.exports = {
     basePath: process.env.SERVER_BASE_PATH || '',
   },
   redis: {
-    url: process.env.REDIS_URL || '',
-    user: process.env.REDIS_USER || '',
     password: process.env.REDIS_PASSWORD || '',
     host: process.env.REDIS_HOST || '127.0.0.1',
     port: process.env.REDIS_PORT || 6379,

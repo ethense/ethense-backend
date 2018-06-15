@@ -23,15 +23,15 @@
     },
     "appId": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "claimId": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "recipients": {
       "type": ["object"],
-      "required": true,
+      "required": false,
       "default": "[]"
     }
   },

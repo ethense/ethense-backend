@@ -6,15 +6,13 @@ const uportCredentials = require('../../server/modules/uportCredentials')
 
 const redisConf = app.get('redis')
 const redisPassword = redisConf.password ? `:${redisConf.password}@` : ''
-const redisDb = redisConf.db ? `/${redisConf.db}` : ''
-const redisUrl = `redis://${redisConf.user}${redisPassword}${redisConf.host}:${
+const redisUrl = `redis://${redisPassword}${redisConf.host}:${
   redisConf.port
-}${redisDb}`
-console.log(`Redis URL: ${redisConf.url}`)
+}`
 console.log(`Redis URL form parts: ${redisUrl}`)
 const queue = kue.createQueue({
   redis: {
-    url: redisConf.url ? redisConf.url : redisUrl,
+    url: redisUrl,
   },
 })
 
