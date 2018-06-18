@@ -1,0 +1,40 @@
+version: 2
+
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build_image:
+          filters:
+            branches:
+              only: master
+
+jobs:
+  build:
+    docker:
+      - image: docker:17.11.0-ce
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 17.11.0-ce
+      - run:
+          name: Make sure we can build the container
+          command: docker build -t ethcerts-backend .
+  build_image:
+    docker:
+      - image: docker:17.11.0-ce
+    environment:
+      VERSION: $(git rev-parse --short HEAD)
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 17.11.0-ce
+      - run: 
+          name: Build Ethense backend image
+          command: docker build -t roromiscregistry.azurecr.io/ethense/backend:${VERSION} .
+      - run: 
+          name: Login to Docker Private Registry
+          command: docker login roromiscregistry.azurecr.io -u $ACR_USER -p $ACR_PASS
+      - run:
+          name: Push image to private registry
+          command: docker push roromiscregistry.azurecr.io/ethense/backend:${VERSION}

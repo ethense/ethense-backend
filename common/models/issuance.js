@@ -11,9 +11,7 @@ const redisUrl = `redis://${redisPassword}${redisConf.host}:${
 }`
 console.log(`Redis URL form parts: ${redisUrl}`)
 const queue = kue.createQueue({
-  redis: {
-    url: redisUrl,
-  },
+  redis: redisUrl
 })
 
 const DEFAULT_TEMPLATE = (appName, qr, uri) =>
