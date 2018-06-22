@@ -8,6 +8,12 @@ workflows:
           filters:
             branches:
               only: master
+      - deploy:
+          requires:
+            - build_image
+          filters:
+            branches:
+              only: master
 
 jobs:
   build:
@@ -29,12 +35,35 @@ jobs:
       - checkout
       - setup_remote_docker:
           version: 17.11.0-ce
-      - run: 
-          name: Build Ethense backend image
-          command: docker build -t roromiscregistry.azurecr.io/ethense/backend:${VERSION} .
+      - run:
+          name: Install dependencies
+          command: apk add --update git
       - run: 
           name: Login to Docker Private Registry
           command: docker login roromiscregistry.azurecr.io -u $ACR_USER -p $ACR_PASS
+      - run: 
+          name: Build Ethense backend image
+          command: |
+            docker build -t roromiscregistry.azurecr.io/ethense/backend:${VERSION} .
+            docker push roromiscregistry.azurecr.io/ethense/backend:${VERSION}
+  deploy:
+    docker:
+      - image: lachlanevenson/k8s-kubectl:v1.9.8
+    environment:
+      VERSION: $(git rev-parse --short HEAD)
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 17.11.0-ce
+      - run: 
+          name: Install dependencies
+          command: apk add --update git gnupg
+      - run: 
+          name: Configure staging KUBECONFIG
+          command: echo $GPG_KEY | gpg -d --passphrase-fd 0 --batch --yes .circleci/kubeconfig_staging.gpg > .circleci/kubeconfig_staging
       - run:
-          name: Push image to private registry
-          command: docker push roromiscregistry.azurecr.io/ethense/backend:${VERSION}
+          name: Deploy to staging
+          command: |
+            KUBECONFIG=.circleci/kubeconfig_staging kubectl -n stage-ethense set image deploy/backend backend=roromiscregistry.azurecr.io/ethense/backend:${VERSION}
+            rm -f .circleci/kubeconbfig_staging
+        
