@@ -29,8 +29,6 @@ jobs:
   build_image:
     docker:
       - image: docker:17.11.0-ce
-    environment:
-      VERSION: $(git rev-parse --short HEAD)
     steps:
       - checkout
       - setup_remote_docker:
@@ -44,13 +42,12 @@ jobs:
       - run: 
           name: Build Ethense backend image
           command: |
+            export VERSION=$(git rev-parse --short HEAD)
             docker build -t roromiscregistry.azurecr.io/ethense/backend:${VERSION} .
             docker push roromiscregistry.azurecr.io/ethense/backend:${VERSION}
   deploy:
     docker:
       - image: lachlanevenson/k8s-kubectl:v1.9.8
-    environment:
-      VERSION: $(git rev-parse --short HEAD)
     steps:
       - checkout
       - setup_remote_docker:
@@ -64,6 +61,7 @@ jobs:
       - run:
           name: Deploy to staging
           command: |
+            export VERSION=$(git rev-parse --short HEAD)
             KUBECONFIG=.circleci/kubeconfig_staging kubectl -n stage-ethense set image deploy/backend backend=roromiscregistry.azurecr.io/ethense/backend:${VERSION}
             rm -f .circleci/kubeconbfig_staging
         
