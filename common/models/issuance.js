@@ -9,7 +9,7 @@ const redisPassword = redisConf.password ? `:${redisConf.password}@` : ''
 const redisUrl = `redis://${redisPassword}${redisConf.host}:${
   redisConf.port
 }`
-console.log(`Redis URL form parts: ${redisUrl}`)
+console.log(`Redis URL: ${redisUrl}`)
 const queue = kue.createQueue({
   redis: redisUrl
 })
