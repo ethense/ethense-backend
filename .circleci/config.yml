@@ -6,12 +6,16 @@ workflows:
     jobs:
       - build_image:
           filters:
+            tags:
+              only: /^v?[0-9]+(\.[0-9]+)*/
             branches:
               only: master
       - deploy:
           requires:
             - build_image
           filters:
+            tags:
+              only: /^v?[0-9]+(\.[0-9]+)*/
             branches:
               only: master
 
@@ -26,6 +30,7 @@ jobs:
       - run:
           name: Make sure we can build the container
           command: docker build -t ethcerts-backend .
+
   build_image:
     docker:
       - image: docker:17.11.0-ce
@@ -42,9 +47,16 @@ jobs:
       - run: 
           name: Build Ethense backend image
           command: |
-            export VERSION=$(git rev-parse --short HEAD)
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              export VERSION=$(git rev-parse --short HEAD)
+              echo "Building staging image"
+            else
+              export VERSION=${CIRCLE_TAG}
+              echo "Building production image"
+            fi
             docker build -t roromiscregistry.azurecr.io/ethense/backend:${VERSION} .
             docker push roromiscregistry.azurecr.io/ethense/backend:${VERSION}
+
   deploy:
     docker:
       - image: lachlanevenson/k8s-kubectl:v1.9.8
@@ -56,12 +68,28 @@ jobs:
           name: Install dependencies
           command: apk add --update git gnupg
       - run: 
-          name: Configure staging KUBECONFIG
-          command: echo $GPG_KEY | gpg -d --passphrase-fd 0 --batch --yes .circleci/kubeconfig_staging.gpg > .circleci/kubeconfig_staging
-      - run:
-          name: Deploy to staging
+          name: Configure KUBECONFIG
           command: |
-            export VERSION=$(git rev-parse --short HEAD)
-            KUBECONFIG=.circleci/kubeconfig_staging kubectl -n stage-ethense set image deploy/backend backend=roromiscregistry.azurecr.io/ethense/backend:${VERSION}
-            rm -f .circleci/kubeconbfig_staging
-        
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              echo "Setting up KUBECONFIG for staging"
+              echo $GPG_KEY | gpg -d --passphrase-fd 0 --batch --yes .circleci/kubeconfig_staging.gpg > .circleci/kubeconfig
+            else
+              echo "Setting up KUBECONFIG for production"
+              echo $GPG_KEY | gpg -d --passphrase-fd 0 --batch --yes .circleci/kubeconfig_prod.gpg > .circleci/kubeconfig
+            fi
+      - run:
+          name: Deploy
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              export VERSION=$(git rev-parse --short HEAD)
+              declare -a NS=("stage-ethense")
+              echo "Deploying to staging"
+            else
+              export VERSION=${CIRCLE_TAG}
+              declare -a NS=("ethense-academy" "ethense-frankfurt" "ethense-melbourne")
+              echo "Deploying to production"
+            fi
+            for namespace in "${NS[@]}"; do
+              KUBECONFIG=.circleci/kubeconfig kubectl -n ${namespace} set image deploy/backend backend=roromiscregistry.azurecr.io/ethense/backend:${VERSION}
+            done
+            rm -f .circleci/kubeconbfig
