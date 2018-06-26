@@ -47,10 +47,10 @@ jobs:
       - run: 
           name: Build Ethense backend image
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+            if [ -n "${CIRCLE_BRANCH}" ]; then
               export VERSION=$(git rev-parse --short HEAD)
               echo "Building staging image"
-            else
+            elif [ -n "${CIRCLE_TAG}" ]; then
               export VERSION=${CIRCLE_TAG}
               echo "Building production image"
             fi
@@ -70,26 +70,25 @@ jobs:
       - run: 
           name: Configure KUBECONFIG
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+            if [ -n "${CIRCLE_BRANCH}" ]; then
               echo "Setting up KUBECONFIG for staging"
               echo $GPG_KEY | gpg -d --passphrase-fd 0 --batch --yes .circleci/kubeconfig_staging.gpg > .circleci/kubeconfig
-            else
+            elif [ -n "${CIRCLE_TAG}" ]; then
               echo "Setting up KUBECONFIG for production"
               echo $GPG_KEY | gpg -d --passphrase-fd 0 --batch --yes .circleci/kubeconfig_prod.gpg > .circleci/kubeconfig
             fi
       - run:
           name: Deploy
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+            if [ -n "${CIRCLE_BRANCH}" ]; then
               export VERSION=$(git rev-parse --short HEAD)
-              declare -a NS=("stage-ethense")
               echo "Deploying to staging"
-            else
+              KUBECONFIG=.circleci/kubeconfig kubectl -n stage-ethense set image deploy/backend backend=roromiscregistry.azurecr.io/ethense/backend:${VERSION}
+            elif [ -n "${CIRCLE_TAG}" ]; then
               export VERSION=${CIRCLE_TAG}
-              declare -a NS=("ethense-academy" "ethense-frankfurt" "ethense-melbourne")
               echo "Deploying to production"
+              KUBECONFIG=.circleci/kubeconfig kubectl -n ethense-academy    set image deploy/backend backend=roromiscregistry.azurecr.io/ethense/backend:${VERSION}
+              KUBECONFIG=.circleci/kubeconfig kubectl -n ethense-frankfurt  set image deploy/backend backend=roromiscregistry.azurecr.io/ethense/backend:${VERSION}
+              KUBECONFIG=.circleci/kubeconfig kubectl -n ethense-melbourne  set image deploy/backend backend=roromiscregistry.azurecr.io/ethense/backend:${VERSION}
             fi
-            for namespace in "${NS[@]}"; do
-              KUBECONFIG=.circleci/kubeconfig kubectl -n ${namespace} set image deploy/backend backend=roromiscregistry.azurecr.io/ethense/backend:${VERSION}
-            done
             rm -f .circleci/kubeconbfig
