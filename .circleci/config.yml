@@ -87,8 +87,10 @@ jobs:
             elif [ -n "${CIRCLE_TAG}" ]; then
               export VERSION=${CIRCLE_TAG}
               echo "Deploying to production"
-              KUBECONFIG=.circleci/kubeconfig kubectl -n ethense-academy    set image deploy/backend backend=roromiscregistry.azurecr.io/ethense/backend:${VERSION}
-              KUBECONFIG=.circleci/kubeconfig kubectl -n ethense-frankfurt  set image deploy/backend backend=roromiscregistry.azurecr.io/ethense/backend:${VERSION}
-              KUBECONFIG=.circleci/kubeconfig kubectl -n ethense-melbourne  set image deploy/backend backend=roromiscregistry.azurecr.io/ethense/backend:${VERSION}
+              KUBECONFIG=.circleci/kubeconfig kubectl -n ethense-academy        set image deploy/backend backend=roromiscregistry.azurecr.io/ethense/backend:${VERSION}
+              KUBECONFIG=.circleci/kubeconfig kubectl -n ethense-frankfurt      set image deploy/backend backend=roromiscregistry.azurecr.io/ethense/backend:${VERSION}
+              KUBECONFIG=.circleci/kubeconfig kubectl -n ethense-melbourne      set image deploy/backend backend=roromiscregistry.azurecr.io/ethense/backend:${VERSION}
+              KUBECONFIG=.circleci/kubeconfig kubectl -n ethense-india          set image deploy/backend backend=roromiscregistry.azurecr.io/ethense/backend:${VERSION}
+              KUBECONFIG=.circleci/kubeconfig kubectl -n ethense-blockchainexe  set image deploy/backend backend=roromiscregistry.azurecr.io/ethense/backend:${VERSION}
             fi
             rm -f .circleci/kubeconbfig
