@@ -14,7 +14,7 @@
       "runtimeExecutable": null,
       "env": {
         "SERVER_SCHEMA": "http",
-        "SERVER_HOST": "192.168.1.4",
+        "SERVER_HOST": "192.168.1.168",
         "SERVER_BACKEND_PORT": "3000",
         "SERVER_FRONTEND_PORT": "3001"
       }
